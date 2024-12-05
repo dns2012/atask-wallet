@@ -1,0 +1,1 @@
+Rails.application.config.minimum_transaction_amount = ENV.fetch('MINIMUM_TRANSACTION_AMOUNT', 10000).to_i

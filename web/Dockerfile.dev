@@ -1,0 +1,25 @@
+ARG NODE_VERSION=21.1.0
+
+# Create build stage
+FROM node:21.1.0
+
+# Enable pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy package.json and pnpm-lock.yaml files to the working directory
+COPY ./package.json /app/
+COPY ./pnpm-lock.yaml /app/
+
+## Install dependencies
+RUN pnpm install --shamefully-hoist
+
+# Copy the rest of the application files to the working directory
+COPY . ./
+
+# Set the working directory inside the container
+WORKDIR /app

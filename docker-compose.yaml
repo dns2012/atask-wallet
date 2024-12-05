@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    command: bundle exec rails s -b '0.0.0.0'
+    volumes:
+      - ./api:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: pnpm run dev
+    depends_on:
+      - api
+  postgres:
+    image: postgres:latest
+    environment:
+        POSTGRES_DB: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+    ports:
+        - "5433:5432"
+    volumes:
+        - .docker/postgresql:/var/lib/postgresql/data
